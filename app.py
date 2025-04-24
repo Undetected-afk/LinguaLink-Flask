@@ -2,11 +2,13 @@ from flask import Flask, render_template, request
 from transformers import MarianMTModel, MarianTokenizer
 from langdetect import detect
 from gtts import gTTS
-import os, csv, datetime
+import os
+import csv
+import datetime
 
 app = Flask(__name__)
 
-# Model loading cache
+# Cache models to avoid reloading
 model_cache = {}
 
 def get_model(src, tgt):
@@ -36,17 +38,17 @@ def index():
             elif tone == "casual":
                 input_text = "Translate casually: " + input_text
 
-            tokens = tokenizer.prepare_seq2seq_batch([input_text], return_tensors="pt")
+            tokens = tokenizer([input_text], return_tensors="pt", padding=True)
             translation = model.generate(**tokens)
             result = tokenizer.decode(translation[0], skip_special_tokens=True)
 
-            # Save audio
+            # Generate voice
             tts = gTTS(text=result, lang=target_lang)
             audio_file = "static/output.mp3"
             tts.save(audio_file)
 
-            # Save translation history
-            with open("translation_history.csv", mode="a", newline="") as file:
+            # Log translation
+            with open("translation_history.csv", mode="a", newline="", encoding="utf-8") as file:
                 writer = csv.writer(file)
                 writer.writerow([
                     datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -62,6 +64,7 @@ def index():
 
     return render_template("index.html", result=result, audio_file=audio_file)
 
-import os
-port = int(os.environ.get("PORT", 5000))
-app.run(host="0.0.0.0", port=port)
+# Correcting Render deployment setup
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
