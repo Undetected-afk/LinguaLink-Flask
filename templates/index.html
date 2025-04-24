@@ -1,1 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LinguaLink – Smart Translator</title>
+</head>
+<body style="font-family: Arial; padding: 20px; max-width: 600px; margin: auto;">
+    <h2>🌐 LinguaLink Translator</h2>
+    <form method="POST">
+        <label>Enter Text:</label><br>
+        <textarea name="input_text" rows="4" cols="60" required></textarea><br><br>
+
+        <label>Select Target Language:</label>
+        <select name="target_lang">
+            <option value="fr">French</option>
+            <option value="es">Spanish</option>
+            <option value="de">German</option>
+            <option value="hi">Hindi</option>
+        </select><br><br>
+
+        <label>Select Tone:</label>
+        <select name="tone">
+            <option value="neutral">Neutral</option>
+            <option value="formal">Formal</option>
+            <option value="casual">Casual</option>
+        </select><br><br>
+
+        <button type="submit">Translate</button>
+    </form>
+
+    {% if result %}
+        <h3>Translated Text:</h3>
+        <p>{{ result }}</p>
+
+        <h3>🔊 Listen:</h3>
+        <audio controls>
+            <source src="{{ audio_file }}" type="audio/mpeg">
+        </audio>
+    {% endif %}
+</body>
+</html>
 
