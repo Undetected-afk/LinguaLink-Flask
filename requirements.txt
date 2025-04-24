@@ -4,3 +4,4 @@ torch
 gtts
 langdetect
 sentencepiece
+sacremoses
